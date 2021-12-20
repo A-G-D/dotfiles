@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+export PATH="$(yarn global bin):$PATH"
+export PATH="$APPIMAGES_DIR/bin:$PATH"
+export PATH="$FILES/bin:$PATH"

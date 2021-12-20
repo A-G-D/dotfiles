@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+. "$CONDA_PATH/etc/profile.d/conda.sh"
+
+# Activate default env
+conda activate

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# Remount paths with new flags
+sudo mount -i -o remount,exec,symfollow "$HOME"
+sudo mount -i -o remount,exec /tmp
+sudo mount -o remount,exec,symfollow "/media/removable/Shared Storage"
+sudo mount -o remount,exec,symfollow "/media/removable/Linux Shared"

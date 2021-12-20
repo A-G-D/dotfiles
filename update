@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+cd `dirname ${BASH_SOURCE[0]}`
+
+if [ -f /etc/os-release ]; then
+    OS_ID=`awk -F= '$1=="ID" { print $2 ;}' /etc/os-release`
+
+    # prepare list of all applicable configurations for different OSes
+    if [ "$OS_ID" == "chromeos" ]; then
+        os_id_list=( linux chromeos )
+    elif [ "$OS_ID" == "linuxmint" ]; then
+        os_id_list=( linux linuxmint )
+    fi
+else
+    os_id_list=( linux )
+fi
+
+dotfiles=( ~/.bash_profile ~/.bash_login ~/.profile ~/.bashrc ~/.bash_logout )
+
+for dotfile in ${dotfiles[@]}; do
+    [ ! -f "$dotfile" ] && continue
+
+    dotname=`basename ${dotfile//./}`
+    conf_dir="$dotfile.config"
+
+    # prepare config folder
+    if [ -d "$conf_dir" ]; then 
+        mkdir "$conf_dir/.config.old"
+        mv "$conf_dir"/* "$conf_dir/.config.old"
+    else
+        mkdir "$conf_dir"
+    fi
+
+    # copy initializer file
+    cp __init__ "$conf_dir"
+
+    i=0
+    # copy config files
+    for os_id in ${os_id_list[@]}; do
+        if [ -d "$os_id/$dotname" ]; then
+            for conf_file in "$os_id/$dotname"/*; do
+                cp "$conf_file" "$conf_dir/${i}_$(basename $conf_file)"
+            done
+            let "i+=1"
+        fi
+    done
+
+    text_to_add=`cat << EOF
+# AGD's Custom shell configuration:
+. "$conf_dir/__init__"
+EOF
+`
+
+    # inject sourcing command in the dotfile
+    if [[ `grep "^$text_to_add$" "$dotfile"` != "$text_to_add" ]]; then
+        echo "" >> "$dotfile"
+        echo "$text_to_add" >> "$dotfile"
+    fi
+
+    rm -rf "$conf_dir/.config.old"
+done

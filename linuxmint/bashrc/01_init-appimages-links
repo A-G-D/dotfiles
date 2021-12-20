@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+[ -z "$APPIMAGES_DIR" ] && APPIMAGES_DIR=$HOME/Files/applications/linux/appimages
+
+[ ! -d "$APPIMAGES_DIR/bin" ] && mkdir -v "$APPIMAGES_DIR/bin"
+
+declare -A appimages
+
+# Scan already existing binary links to AppImages
+for bin in "$APPIMAGES_DIR/bin"/*; do
+    if [ ! -L "$bin" ] || [ ! -e "$bin" ]; then
+        # Remove broken links or links to no longer existing AppImages
+        rm -v "$bin"
+    fi
+done
+
+# Scan AppImages directory
+for dir_path in "$APPIMAGES_DIR"/*; do
+    if [ -d "$dir_path" ] && [ "$dir_path" != "$APPIMAGES_DIR/bin" ]; then
+        dir="$(basename "$dir_path")"
+        app="$(ls "$dir_path" | head -n1 -q -)"
+        target="../$dir/$app"
+
+        appimages["$dir"]="$app"
+
+        # Create symlinks for new AppImages
+        if [ ! -f "$APPIMAGES_DIR/bin/$dir" ]; then
+            chmod +x "$APPIMAGES_DIR/bin/$dir"
+            ln -sv "$target" "$APPIMAGES_DIR/bin/$dir"
+        fi
+    fi
+done
+
+# Update binary links to AppImages
+for bin in "$APPIMAGES_DIR/bin"/*; do
+    target="$(readlink "$bin")"
+    app="$(basename "$target")"
+    dir="$(basename "$bin")"
+
+    if [ "$app" != "${appimages["$dir"]}" ]; then
+        # Update binary links of changed AppImage files
+        rm -v "$bin"
+        chmod +x "$APPIMAGES_DIR/bin/$dir"
+        ln -sv "../$dir/${appimages["$dir"]}" "$APPIMAGES_DIR/bin/$dir"
+    fi
+done

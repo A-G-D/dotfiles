@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Init sommelier
+export DISPLAY=:0
+startsommelier

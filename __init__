@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+thisdir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
+thisfile=$(basename "${BASH_SOURCE[0]}")
+logdir="$thisdir.log"
+
+[ ! -d "$logdir" ] && mkdir "$logdir"
+
+for conf_file in "$thisdir"/*; do
+    name=$(basename "$conf_file")
+    if [ "$thisfile" != "$name" ]; then
+        logfile="$logdir/$name.log.txt"
+        echo "Log start: $(date +%s)" >> "$logfile"
+        . "$conf_file" &>> "$logfile"
+        echo "Log end..." >> "$logfile"
+    fi
+done

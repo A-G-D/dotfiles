@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Global environment variables
+export DESKTOP="$HOME/Desktop"
+export DOCUMENTS="$HOME/Documents"
+export DOWNLOADS="$HOME/Downloads"
+export FILES="$HOME/Files"
+export GAMES="$HOME/Games"
+export MUSIC="$HOME/Music"
+export PICTURES="$HOME/Pictures"
+export PROJECTS="$HOME/Projects"
+export TEMPLATES="$HOME/Templates"
+export VIDEOS="$HOME/Videos"
+export PUBLIC="$HOME/Public"
+
+export PATH="/usr/local/lib/node_modules/yarn/bin:$PATH"
+
+export LD_LIBRARY_PATH="/usr/local/lib"
+
+export PYTHONPATH=""
+export PIP_TARGET=""
+
+export CLASSPATH=".:/usr/local/lib/antlr-4.9-complete.jar:$CLASSPATH"
+
+export CASROOT="$HOME/Files/applications/linux/opencascade-7.5.0"
+
+export GUIX_LOCPATH="$HOME/.guix-profile/lib/locale"
+
+export CONDA_PATH="$FILES/applications/linux/anaconda3"
+
+export APPIMAGES_DIR="$FILES/applications/linux/appimages"
+export APPS="$APPIMAGES_DIR"
+
+# set PATH so it includes user's private bin if it exists
+[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
+[ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"

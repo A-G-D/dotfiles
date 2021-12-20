@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+for dir in "$APPIMAGES_DIR"/*; do
+    alias $(basename $dir)="$dir/$(ls "$dir" | head -n1 -q -) --appimage-extract-and-run"
+done
